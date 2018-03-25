@@ -1,0 +1,5 @@
+## Project configuration
+/composer.lock
+
+## Development tools & IDE configuration
+/.idea/
