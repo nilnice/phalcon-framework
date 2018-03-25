@@ -1,3 +1,3 @@
-# Phalcon Service Provider
+# Another Phalcon Framework
 
-A service provider application is based on Phalcon framework.
+Another package is based on the Phalcon framework.
