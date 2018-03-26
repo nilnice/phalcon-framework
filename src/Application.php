@@ -12,6 +12,7 @@ use Nilnice\Phalcon\Provider\ModelManagerServiceProvider;
 use Nilnice\Phalcon\Provider\RequestServiceProvider;
 use Nilnice\Phalcon\Provider\ResponseServiceProvider;
 use Nilnice\Phalcon\Provider\RouterServiceProvider;
+use Nilnice\Phalcon\Provider\SecurityServiceProvider;
 use Nilnice\Phalcon\Provider\ServiceProviderInterface;
 use Phalcon\Config;
 use Phalcon\Di;
@@ -54,7 +55,6 @@ class Application
         $this->di = new Di();
         $this->di->setShared('application', $this);
         Di::setDefault($this->di);
-
 
         $this->loadProvider();
 
@@ -192,7 +192,7 @@ class Application
     /**
      * @param string $name
      */
-    public function configure(string $name): void
+    protected function configure(string $name): void
     {
         if (isset($this->loadedConfigurations[$name])) {
             return;
@@ -227,6 +227,7 @@ class Application
             RequestServiceProvider::class,
             ResponseServiceProvider::class,
             RouterServiceProvider::class,
+            SecurityServiceProvider::class,
         ];
         foreach ($providers as $provider) {
             $this->register(new $provider($this->getDi()));

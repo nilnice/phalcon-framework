@@ -23,8 +23,7 @@ class DispatcherServiceProvider extends AbstractServiceProvider
     {
         $di = $this->getDI();
         $di->setShared($this->getName(), function () use ($di) {
-            /** @var \Phalcon\Config $route */
-            $route = $di->getShared('config')->get('route');
+            $route = config('route');
             $dispatcher = new Dispatcher();
             $dispatcher->setDefaultNamespace($route->get('namespace'));
             $dispatcher->setDefaultController($route->get('controller'));

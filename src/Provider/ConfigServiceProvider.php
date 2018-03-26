@@ -22,7 +22,8 @@ class ConfigServiceProvider extends AbstractServiceProvider
     public function register($parameter = null): void
     {
         $di = $this->getDI();
-        $di->setShared($this->getName(), function () use ($di) {
+        $name = $this->getName();
+        $di->setShared($name, function () use ($di, $name) {
             /** @var \Nilnice\Phalcon\Application $app */
             $app = $di->getShared('application');
             $filename = $app->getBasePath() . '/config/app.php';
@@ -33,7 +34,7 @@ class ConfigServiceProvider extends AbstractServiceProvider
             }
 
             if (\is_array($config)) {
-                $config = new Config($config);
+                $config = new Config([$name => $config]);
             }
 
             return $config;
