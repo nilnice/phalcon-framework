@@ -3,9 +3,11 @@
 namespace Nilnice\Phalcon;
 
 use Illuminate\Support\Str;
+use Nilnice\Phalcon\Exception\ErrorHandler;
 use Nilnice\Phalcon\Provider\ConfigServiceProvider;
 use Nilnice\Phalcon\Provider\DatabaseServiceProvider;
 use Nilnice\Phalcon\Provider\DispatcherServiceProvider;
+use Nilnice\Phalcon\Provider\ErrorHandleProvider;
 use Nilnice\Phalcon\Provider\EventManagerServiceProvider;
 use Nilnice\Phalcon\Provider\MetadataServiceProvider;
 use Nilnice\Phalcon\Provider\ModelManagerServiceProvider;
@@ -51,6 +53,7 @@ class Application
      */
     public function __construct(string $basePath = null)
     {
+        ErrorHandler::register();
         $this->basePath = $basePath;
         $this->di = new Di();
         $this->di->setShared('application', $this);
@@ -109,6 +112,14 @@ class Application
         if (file_exists($path = __DIR__ . '/../config/' . $name . '.php')) {
             return $path;
         }
+    }
+
+    /**
+     * @return \Phalcon\Mvc\Application
+     */
+    public function getApp(): \Phalcon\Mvc\Application
+    {
+        return $this->app;
     }
 
     /**
@@ -183,7 +194,10 @@ class Application
             }
         } else {
             $provider->register();
-            $this->providers[$provider->getName()] = $provider;
+
+            if ($name = $provider->getName()) {
+                $this->providers[$name] = $provider;
+            }
         }
 
         return $this;
@@ -219,14 +233,15 @@ class Application
     {
         $providers = [
             ConfigServiceProvider::class,
-            DatabaseServiceProvider::class,
+            ErrorHandleProvider::class,
+            RouterServiceProvider::class,
+            EventManagerServiceProvider::class,
             DispatcherServiceProvider::class,
+            DatabaseServiceProvider::class,
             MetadataServiceProvider::class,
             ModelManagerServiceProvider::class,
-            EventManagerServiceProvider::class,
             RequestServiceProvider::class,
             ResponseServiceProvider::class,
-            RouterServiceProvider::class,
             SecurityServiceProvider::class,
         ];
         foreach ($providers as $provider) {
