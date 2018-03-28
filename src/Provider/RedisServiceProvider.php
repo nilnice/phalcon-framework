@@ -2,12 +2,12 @@
 
 namespace Nilnice\Phalcon\Provider;
 
-class CacheServiceProvider extends AbstractServiceProvider
+class RedisServiceProvider extends AbstractServiceProvider
 {
     /**
      * @var string
      */
-    protected $name = 'cache';
+    protected $name = 'redis';
 
     /**
      * Register cache service provider.
@@ -21,20 +21,28 @@ class CacheServiceProvider extends AbstractServiceProvider
         $name = $this->getAdapterName();
         $this->getDI()->setShared($this->getName(), function () use ($name) {
             $adapter = config('cache.connections.' . $name);
-            $backend = $adapter->get('backend');
-            $frontend = $adapter->get('frontend');
+            $array = $adapter->toArray();
+            $driver = $array['driver'];
+            $options = $array[$driver]['options'];
 
-            $cache = new $frontend([
-                'lifetime' => $adapter->get('lifetime'),
-            ]);
-            $options = $adapter->get('options')->toArray();
+            if ($driver === 'default') {
+                $frontend = $array[$driver]['frontend'];
+                $backend = $array[$driver]['backend'];
+                $cache = new $frontend([
+                    'lifetime' => $array[$driver]['lifetime'],
+                ]);
 
-            return new $backend($cache, $options);
+                return new $backend($cache, $options);
+            } else {
+                $servers = $array[$driver]['servers'];
+                $client = $array[$driver]['client'];
+
+                return new $client($servers, [
+                    'cluster'    => 'redis',
+                    'parameters' => $options,
+                ]);
+            }
         });
-
-        /** @var \Phalcon\Cache\Backend\Redis $redis */
-        $redis = $this->getDI()->getShared($this->getName());
-        $redis->save('hello', [1, 2, 3, 4, 5]);
     }
 
     /**

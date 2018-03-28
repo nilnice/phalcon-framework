@@ -4,7 +4,6 @@ namespace Nilnice\Phalcon;
 
 use Illuminate\Support\Str;
 use Nilnice\Phalcon\Exception\ErrorHandler;
-use Nilnice\Phalcon\Provider\CacheServiceProvider;
 use Nilnice\Phalcon\Provider\ConfigServiceProvider;
 use Nilnice\Phalcon\Provider\DatabaseServiceProvider;
 use Nilnice\Phalcon\Provider\DispatcherServiceProvider;
@@ -12,6 +11,7 @@ use Nilnice\Phalcon\Provider\ErrorHandleProvider;
 use Nilnice\Phalcon\Provider\EventManagerServiceProvider;
 use Nilnice\Phalcon\Provider\MetadataServiceProvider;
 use Nilnice\Phalcon\Provider\ModelManagerServiceProvider;
+use Nilnice\Phalcon\Provider\RedisServiceProvider;
 use Nilnice\Phalcon\Provider\RequestServiceProvider;
 use Nilnice\Phalcon\Provider\ResponseServiceProvider;
 use Nilnice\Phalcon\Provider\RouterServiceProvider;
@@ -244,7 +244,7 @@ class Application
             RequestServiceProvider::class,
             ResponseServiceProvider::class,
             SecurityServiceProvider::class,
-            CacheServiceProvider::class,
+            RedisServiceProvider::class,
         ];
         foreach ($providers as $provider) {
             $this->register(new $provider($this->getDi()));
