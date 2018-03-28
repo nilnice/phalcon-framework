@@ -51,9 +51,8 @@ class Request extends \Phalcon\Http\Request
     {
         $headerToken = $this->getHeader('AUTHORIZATION');
         $queryToken = $this->getQuery('token');
-        $token = $queryToken ?: $this->parseBearerValue($headerToken);
 
-        return $token;
+        return $queryToken ?: $this->parseBearerValue($headerToken);
     }
 
     /**
