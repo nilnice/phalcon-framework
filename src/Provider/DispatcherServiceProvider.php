@@ -25,7 +25,7 @@ class DispatcherServiceProvider extends AbstractServiceProvider
     {
         $di = $this->getDI();
         $di->setShared($this->getName(), function () {
-            $route = config('route');
+            $route = config('app.route');
 
             $dispatcher = new Dispatcher();
             $dispatcher->setDefaultNamespace($route->get('namespace'));
@@ -42,7 +42,7 @@ class DispatcherServiceProvider extends AbstractServiceProvider
             Dispatcher $dispatcher,
             \Exception $e
         ) {
-            if (config('debug')) {
+            if (config('app.debug')) {
                 $params = [
                     'code'          => $e->getCode(),
                     'message'       => $e->getMessage(),

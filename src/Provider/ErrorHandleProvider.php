@@ -14,7 +14,7 @@ class ErrorHandleProvider extends AbstractServiceProvider
     public function register($parameter = null): void
     {
         $this->getDI()->setShared($this->getName(), function () {
-            $handler = config('error_handler');
+            $handler = config('app.error_handler');
 
             return new $handler();
         });

@@ -25,7 +25,7 @@ class DatabaseServiceProvider extends AbstractServiceProvider
             if (env('DB_LISTEN')) {
                 /** @var \Phalcon\Events\Manager $manager */
                 $manager = $di->getShared('eventsManager');
-                $filename = config('query');
+                $filename = config('app.query');
                 $manager->attach($name, new DatabaseEvent($filename));
                 $mysql->setEventsManager($manager);
             }
