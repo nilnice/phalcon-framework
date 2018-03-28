@@ -70,3 +70,29 @@ if (! function_exists('config')) {
         }
     }
 }
+
+if (! function_exists('response')) {
+    function response(
+        string $message = '',
+        int $code = 200,
+        array $headers = []
+    ) {
+        /** @var \Nilnice\Phalcon\Http\Response $response */
+        $response = di('response');
+        $response->setStatusCode($code);
+
+        $content = [
+            'code'    => $code,
+            'message' => $message,
+            'data'    => [],
+        ];
+        if ($headers) {
+            foreach ($headers as $name => $value) {
+                $response->setHeader($name, $value);
+            }
+        }
+        $response->setJsonContent($content);
+
+        return $response->send();
+    }
+}
