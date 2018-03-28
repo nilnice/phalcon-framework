@@ -38,10 +38,10 @@ if (! function_exists('config')) {
      *
      * @return bool|mixed|\Phalcon\Config
      */
-    function config($option = null, $default = null)
+    function config($option = null, $default = false)
     {
         /** @var \Phalcon\Config $config */
-        $config = di()->get('config')->get('config');
+        $config = di('config');
 
         if ($option === null) {
             return $config;
@@ -49,16 +49,16 @@ if (! function_exists('config')) {
 
         if (is_array($option)) {
             if ($default) {
-                $config->merge(new Config($option));
+                $config->merge(new Config(['app' => $option]));
                 $array = $config->toArray();
             } else {
                 $array = array_replace_recursive(
                     $config ? $config->toArray() : [],
-                    $option
+                    ['app' => $option]
                 );
             }
 
-            di()->set('config', function () use ($array) {
+            di()->setShared('config', function () use ($array) {
                 return new Config($array);
             });
 
