@@ -19,7 +19,6 @@ class DatabaseServiceProvider extends AbstractServiceProvider
         ['name' => $name, 'item' => $item] = $parameter;
         $this->name = $name;
         $di = $this->getDI();
-
         $di->setShared($this->getName(), function () use ($di, $name, $item) {
             $mysql = new Mysql($item);
 

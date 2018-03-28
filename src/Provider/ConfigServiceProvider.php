@@ -4,6 +4,7 @@ namespace Nilnice\Phalcon\Provider;
 
 use Phalcon\Config;
 use Phalcon\DiInterface;
+use Symfony\Component\Finder\Finder;
 
 class ConfigServiceProvider extends AbstractServiceProvider
 {
@@ -26,16 +27,19 @@ class ConfigServiceProvider extends AbstractServiceProvider
         $di->setShared($name, function () use ($di, $name) {
             /** @var \Nilnice\Phalcon\Application $app */
             $app = $di->getShared('application');
-            $filename = $app->getBasePath() . '/config/app.php';
-            $config = null;
+            $dirs = $app->getBasePath() . '/config';
 
-            if (file_exists($filename)) {
-                $config = require $filename;
+            $finder = new Finder();
+            $finder->files()
+                ->ignoreDotFiles(true)
+                ->name('/^[a-z_]+\.php$/')
+                ->in($dirs);
+            $array = [];
+            foreach ($finder as $item) {
+                $name = $item->getBasename('.php');
+                $array[$name] = require $item;
             }
-
-            if (\is_array($config)) {
-                $config = new Config([$name => $config]);
-            }
+            $config = new Config($array);
 
             return $config;
         });
