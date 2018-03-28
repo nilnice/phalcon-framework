@@ -33,6 +33,6 @@ class Handler
 
         $response->setJsonContent($content);
 
-        return $response->send();
+        return $response->isSent() ? $response : $response->send();
     }
 }
