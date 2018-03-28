@@ -135,7 +135,7 @@ class JWTAuth
         $signer = new Sha256();
         $token = (new Parser())->parse($token);
         $this->token = $token;
-        $key = config('key');
+        $key = config('app.key');
 
         if (! $token->verify($signer, $key)) {
             throw new InvalidTokenException('The token signature error', 400);
@@ -212,7 +212,7 @@ class JWTAuth
         ]
             = $array;
         $signer = new Sha256();
-        $key = config('key');
+        $key = config('app.key');
         $token = (new Builder())->setIssuer('http://example.com')
             ->setAudience('http://example.org')
             ->setId('4f1g23a12aa', true)
