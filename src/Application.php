@@ -4,6 +4,7 @@ namespace Nilnice\Phalcon;
 
 use Illuminate\Support\Str;
 use Nilnice\Phalcon\Exception\ErrorHandler;
+use Nilnice\Phalcon\Provider\CacheServiceProvider;
 use Nilnice\Phalcon\Provider\ConfigServiceProvider;
 use Nilnice\Phalcon\Provider\DatabaseServiceProvider;
 use Nilnice\Phalcon\Provider\DispatcherServiceProvider;
@@ -206,7 +207,7 @@ class Application
     /**
      * @param string $name
      */
-    protected function configure(string $name): void
+    public function configure(string $name): void
     {
         if (isset($this->loadedConfigurations[$name])) {
             return;
@@ -243,6 +244,7 @@ class Application
             RequestServiceProvider::class,
             ResponseServiceProvider::class,
             SecurityServiceProvider::class,
+            CacheServiceProvider::class,
         ];
         foreach ($providers as $provider) {
             $this->register(new $provider($this->getDi()));
