@@ -4,6 +4,7 @@ namespace Nilnice\Phalcon\Event;
 
 use Phalcon\Db\Adapter\Pdo;
 use Phalcon\Db\Profiler;
+use Phalcon\DiInterface;
 use Phalcon\Events\Event;
 use Phalcon\Logger;
 use Phalcon\Logger\Adapter\File;
@@ -33,8 +34,9 @@ class DatabaseEvent
      *
      * @throws \Symfony\Component\Filesystem\Exception\IOException
      */
-    public function __construct(string $filename = null)
+    public function __construct(DiInterface $di, string $filename = null)
     {
+        $this->di = $di;
         $this->filename = $filename;
         $this->profiler = new Profiler();
         $this->logger = new File($this->getLogFile());
@@ -50,6 +52,8 @@ class DatabaseEvent
      */
     public function beforeQuery(Event $event, Pdo $connection): void
     {
+        dd($event->getSource(), $event->getData(), $event->getType(),
+            $connection);
         if (__FUNCTION__ !== $event->getType()) {
             return;
         }
@@ -91,7 +95,7 @@ class DatabaseEvent
      */
     protected function getLogFile(): string
     {
-        $path = LOGS_DIR . '%s/%s/%s/' . $this->filename;
+        $path = storage_path('database') . '%s/%s/%s/' . $this->filename;
         $path = sprintf($path, date('Y'), date('m'), date('d'));
 
         if (! file_exists($path)) {

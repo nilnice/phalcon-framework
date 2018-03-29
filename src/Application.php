@@ -99,7 +99,7 @@ class Application
      */
     public function getStoragePath(string $path = null): string
     {
-        return $this->getBasePath() . 'storage/' . ($path ? $path : '');
+        return $this->getBasePath() . 'storage/' . ($path ? $path . '/' : '');
     }
 
     /**

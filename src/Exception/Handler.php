@@ -15,10 +15,22 @@ class Handler
      */
     public function render(Exception $e, $isTerminal = false): Response
     {
+        if (config('app.debug')) {
+            $data = [
+                'code'          => $e->getCode(),
+                'message'       => $e->getMessage(),
+                'file'          => $e->getFile(),
+                'line'          => $e->getLine(),
+                'trace'         => $e->getTrace(),
+                'traceAsString' => $e->getTraceAsString(),
+            ];
+        } else {
+            $data = ['message' => $e->getMessage()];
+        }
         $content = [
             'code'    => $e->getCode(),
             'message' => $e->getMessage(),
-            'data'    => [],
+            'data'    => $data,
         ];
 
         if (di()->has('response')) {
