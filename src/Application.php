@@ -5,6 +5,7 @@ namespace Nilnice\Phalcon;
 use Illuminate\Support\Str;
 use Nilnice\Phalcon\Exception\ErrorHandler;
 use Nilnice\Phalcon\Provider\ConfigServiceProvider;
+use Nilnice\Phalcon\Provider\ConsoleServiceProvider;
 use Nilnice\Phalcon\Provider\DatabaseServiceProvider;
 use Nilnice\Phalcon\Provider\DispatcherServiceProvider;
 use Nilnice\Phalcon\Provider\ErrorHandleProvider;
@@ -251,6 +252,7 @@ class Application
             ConfigServiceProvider::class,
             ErrorHandleProvider::class,
             MonologServiceProvider::class,
+            ConsoleServiceProvider::class,
             RouterServiceProvider::class,
             EventManagerServiceProvider::class,
             DispatcherServiceProvider::class,
