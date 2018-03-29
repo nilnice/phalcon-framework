@@ -5,7 +5,8 @@
     "illuminate/support": "^5.7@dev",
     "symfony/filesystem": "^4.1@dev",
     "lcobucci/jwt": "3.2.2",
-    "symfony/finder": "^4.1@dev"
+    "symfony/finder": "^4.1@dev",
+    "monolog/monolog": "^2.0@dev"
   },
   "autoload": {
     "psr-4": {
