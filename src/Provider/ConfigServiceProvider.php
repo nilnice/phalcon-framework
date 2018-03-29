@@ -27,7 +27,7 @@ class ConfigServiceProvider extends AbstractServiceProvider
         $di->setShared($name, function () use ($di, $name) {
             /** @var \Nilnice\Phalcon\Application $app */
             $app = $di->getShared('application');
-            $dirs = $app->getBasePath() . '/config';
+            $dirs = $app->getBasePath() . 'config';
 
             $finder = new Finder();
             $finder->files()
