@@ -32,8 +32,8 @@ class ErrorHandler
     public static function handleError(
         int $type,
         string $message,
-        string $file,
-        int $line
+        string $file = '',
+        int $line = 0
     ): void {
         $level = error_reporting()
             | E_RECOVERABLE_ERROR
