@@ -4,7 +4,7 @@ namespace Nilnice\Phalcon\Console;
 
 use Symfony\Component\Console\Command\Command;
 
-abstract class Console extends Command
+abstract class AbstractConsole extends Command
 {
     /**
      * @var string
