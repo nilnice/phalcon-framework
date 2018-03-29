@@ -11,6 +11,7 @@ use Nilnice\Phalcon\Provider\ErrorHandleProvider;
 use Nilnice\Phalcon\Provider\EventManagerServiceProvider;
 use Nilnice\Phalcon\Provider\MetadataServiceProvider;
 use Nilnice\Phalcon\Provider\ModelManagerServiceProvider;
+use Nilnice\Phalcon\Provider\MonologServiceProvider;
 use Nilnice\Phalcon\Provider\RedisServiceProvider;
 use Nilnice\Phalcon\Provider\RequestServiceProvider;
 use Nilnice\Phalcon\Provider\ResponseServiceProvider;
@@ -68,6 +69,8 @@ class Application
     }
 
     /**
+     * Get base path.
+     *
      * @param string|null $path
      *
      * @return string|null
@@ -85,6 +88,18 @@ class Application
         }
 
         return $this->getBasePath($path);
+    }
+
+    /**
+     * Get storage path.
+     *
+     * @param string|null $path
+     *
+     * @return string
+     */
+    public function getStoragePath(string $path = null): string
+    {
+        return $this->getBasePath() . 'storage/' . ($path ? $path : '');
     }
 
     /**
@@ -235,6 +250,7 @@ class Application
         $providers = [
             ConfigServiceProvider::class,
             ErrorHandleProvider::class,
+            MonologServiceProvider::class,
             RouterServiceProvider::class,
             EventManagerServiceProvider::class,
             DispatcherServiceProvider::class,
