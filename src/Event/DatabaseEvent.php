@@ -34,9 +34,8 @@ class DatabaseEvent
      *
      * @throws \Symfony\Component\Filesystem\Exception\IOException
      */
-    public function __construct(DiInterface $di, string $filename = null)
+    public function __construct(string $filename = null)
     {
-        $this->di = $di;
         $this->filename = $filename;
         $this->profiler = new Profiler();
         $this->logger = new File($this->getLogFile());
@@ -52,8 +51,6 @@ class DatabaseEvent
      */
     public function beforeQuery(Event $event, Pdo $connection): void
     {
-        dd($event->getSource(), $event->getData(), $event->getType(),
-            $connection);
         if (__FUNCTION__ !== $event->getType()) {
             return;
         }
@@ -74,7 +71,7 @@ class DatabaseEvent
             return;
         }
 
-        $Line = new Logger\Formatter\Line("[%date%] - [%type%]\r\n%message%");
+        $Line = new Logger\Formatter\Line("[%date%] - [%type%] - %message%");
         $this->logger->setFormatter($Line);
         $this->logger->log($connection->getSQLStatement(), Logger::INFO);
         $this->profiler->stopProfile();
