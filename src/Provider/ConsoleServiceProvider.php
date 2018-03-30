@@ -6,9 +6,9 @@ use Symfony\Component\Console\Application;
 
 class ConsoleServiceProvider extends AbstractServiceProvider
 {
-    public const VERSION = 'v1.0.0';
+    public const NAME = 'Artisan (c) for Phalcon Console';
 
-    public const DESCRIPTION = 'Artisan (c) for Phalcon Console';
+    public const VERSION = 'v1.0.0';
 
     /**
      * @var string
@@ -20,7 +20,7 @@ class ConsoleServiceProvider extends AbstractServiceProvider
      */
     private static $commands
         = [
-            \Nilnice\Phalcon\Console\App\ControllerCommand::class,
+            \Nilnice\Phalcon\Console\Command\ControllerCommand::class,
         ];
 
     /**
@@ -32,8 +32,8 @@ class ConsoleServiceProvider extends AbstractServiceProvider
      */
     public function register($parameter = null): void
     {
-        $this->getDI()->set($this->getName(), function () {
-            $app = new Application($this->getName(), static::VERSION);
+        $definition = function () {
+            $app = new Application(static::NAME, static::VERSION);
 
             if (PHP_SAPI === 'cli') {
                 foreach (static::$commands as $command) {
@@ -42,6 +42,7 @@ class ConsoleServiceProvider extends AbstractServiceProvider
             }
 
             return $app;
-        });
+        };
+        $this->getDI()->setShared($this->getName(), $definition());
     }
 }
