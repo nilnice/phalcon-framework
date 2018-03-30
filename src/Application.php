@@ -10,6 +10,7 @@ use Nilnice\Phalcon\Provider\DatabaseServiceProvider;
 use Nilnice\Phalcon\Provider\DispatcherServiceProvider;
 use Nilnice\Phalcon\Provider\ErrorHandleProvider;
 use Nilnice\Phalcon\Provider\EventManagerServiceProvider;
+use Nilnice\Phalcon\Provider\FlysystemServiceProvider;
 use Nilnice\Phalcon\Provider\MetadataServiceProvider;
 use Nilnice\Phalcon\Provider\ModelManagerServiceProvider;
 use Nilnice\Phalcon\Provider\MonologServiceProvider;
@@ -259,6 +260,7 @@ class Application
             DatabaseServiceProvider::class,
             MetadataServiceProvider::class,
             ModelManagerServiceProvider::class,
+            FlysystemServiceProvider::class,
             RequestServiceProvider::class,
             ResponseServiceProvider::class,
             SecurityServiceProvider::class,
