@@ -71,6 +71,19 @@ if (! function_exists('config')) {
     }
 }
 
+if (! function_exists('flysystem')) {
+    function flysystem(string $path = null)
+    {
+        if (null !== $path) {
+            $adapter = new \League\Flysystem\Adapter\Local($path);
+
+            return new \League\Flysystem\Filesystem($adapter);
+        }
+
+        return di()->get('flysystem');
+    }
+}
+
 if (! function_exists('storage_path')) {
     /**
      * @param null $path
