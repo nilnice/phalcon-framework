@@ -2,6 +2,8 @@
 
 namespace Nilnice\Phalcon\Auth;
 
+use Phalcon\Mvc\Model;
+
 interface AccountTypeInterface
 {
     /**
@@ -11,7 +13,7 @@ interface AccountTypeInterface
      *
      * @return null|string
      */
-    public function login(array $data): ? string;
+    public function login(array $data): Model;
 
     /**
      * User authentication.

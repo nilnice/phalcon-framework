@@ -9,6 +9,7 @@ use Lcobucci\JWT\Token;
 use Lcobucci\JWT\ValidationData;
 use Nilnice\Phalcon\Exception\InvalidAccountTypeException;
 use Nilnice\Phalcon\Exception\InvalidTokenException;
+use Phalcon\Mvc\Model;
 
 class JWTAuth
 {
@@ -26,11 +27,6 @@ class JWTAuth
      * @var \Lcobucci\JWT\Token
      */
     protected $token;
-
-    /**
-     * @var string
-     */
-    protected $accountType;
 
     /**
      * @var array
@@ -93,21 +89,27 @@ class JWTAuth
         if (! $accountType instanceof AccountTypeInterface) {
             throw new InvalidAccountTypeException('The account type must be an instance of AccountTypeInterface');
         }
+        $this->accountType = $accountType;
 
-        $identity = $this->getIdentity($accountType, $array);
+        /** @var \Phalcon\Mvc\Model $model */
+        $model = $this->getIdentity($accountType, $array);
         $issueAt = time();
         $expireAt = $this->duration + $issueAt;
         $array = [
+            'iss' => config('app.token.iss'),
+            'aud' => config('app.token.aud'),
+            'jti' => $model->getAppId(),
+            'key' => $model->getAppSecret(),
             'isa' => time(),
             'exp' => $expireAt,
-            'uid' => $identity,
+            'uid' => $model->getId(),
         ];
 
         $token = $this->createToken($array);
         $this->token = $token;
         $result = [
             'token' => $token->__toString(),
-            'uid'   => $identity,
+            'uid'   => $model->getId(),
         ];
 
         return $result;
@@ -135,16 +137,28 @@ class JWTAuth
         $signer = new Sha256();
         $token = (new Parser())->parse($token);
         $this->token = $token;
-        $key = config('app.key');
 
-        if (! $token->verify($signer, $key)) {
+        $uid = $this->token->getClaim('uid');
+        $auth = config('auth.class');
+        $auth = $auth::findFirst([
+            'conditions' => 'id=:id:',
+            'bind'       => ['id' => $uid],
+        ]);
+
+        if (! $auth) {
+            throw new InvalidTokenException('The user does not exist', 404);
+        }
+        $array = $auth->toArray();
+        ['appId' => $appId, 'appSecret' => $appSecret] = $array;
+
+        if (! $token->verify($signer, $array['appSecret'])) {
             throw new InvalidTokenException('The token signature error', 400);
         }
 
         $data = new ValidationData();
-        $data->setIssuer('http://example.com');
-        $data->setAudience('http://example.org');
-        $data->setId('4f1g23a12aa');
+        $data->setIssuer(config('app.token.iss'));
+        $data->setAudience(config('app.token.aud'));
+        $data->setId($appId);
 
         if (! $token->validate($data)) {
             throw new InvalidTokenException('The token has expired', 400);
@@ -206,21 +220,24 @@ class JWTAuth
     private function createToken(array $array): Token
     {
         [
+            'iss' => $issuer,
+            'aud' => $audience,
+            'jti' => $appId,
             'isa' => $issueAt,
             'exp' => $expireAt,
             'uid' => $uid,
+            'key' => $appSecret,
         ]
             = $array;
         $signer = new Sha256();
-        $key = config('app.key');
-        $token = (new Builder())->setIssuer('http://example.com')
-            ->setAudience('http://example.org')
-            ->setId('4f1g23a12aa', true)
+        $token = (new Builder())->setIssuer($issuer)
+            ->setAudience($audience)
+            ->setId($appId, true)
             ->setIssuedAt($issueAt)
             ->setNotBefore($issueAt)
             ->setExpiration($expireAt)
             ->set('uid', $uid)
-            ->sign($signer, $key)
+            ->sign($signer, $appSecret)
             ->getToken();
 
         return $token;
@@ -237,7 +254,7 @@ class JWTAuth
     private function getIdentity(
         AccountTypeInterface $accountType,
         array $array
-    ): string {
+    ): ?Model {
         return $accountType->login($array);
     }
 }
