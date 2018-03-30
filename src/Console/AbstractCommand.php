@@ -9,36 +9,53 @@ use Symfony\Component\Console\Output\OutputInterface;
 abstract class AbstractCommand extends Command
 {
     /**
-     * @var string
+     * @var \Symfony\Component\Console\Input\InputInterface
      */
-    protected $name;
+    private $input;
 
     /**
-     * @var string
+     * @var \Symfony\Component\Console\Output\OutputInterface
      */
-    protected $description;
+    private $output;
 
     /**
-     * @var string
+     * @param string $message
      */
-    protected $help;
+    public function info(string $message)
+    {
+        $this->getOutput()->writeln("<info>$message</info>");
+    }
 
     /**
-     * @var mixed
+     * @param string $message
      */
-    protected $input;
+    public function error(string $message)
+    {
+        $this->getOutput()->writeln("<error>$message</error>");
+    }
 
     /**
-     * @var mixed
+     * @param string $message
      */
-    protected $output;
+    public function echo(string $message)
+    {
+        $this->getOutput()->writeln($message);
+    }
+
+    /**
+     * @param string $message
+     */
+    public function comment(string $message)
+    {
+        $this->getOutput()->writeln("<comment>$message</comment>");
+    }
 
     /**
      * An abstract method that will be called on every concrete command.
      *
      * @return mixed
      */
-    abstract protected function goExecute();
+    abstract protected function handle();
 
     /**
      * {@inheritdoc}
@@ -47,13 +64,13 @@ abstract class AbstractCommand extends Command
     {
         $this->input = $input;
         $this->output = $output;
-        $this->goExecute();
+        $this->handle();
     }
 
     /**
      * @return \Symfony\Component\Console\Input\InputInterface
      */
-    protected function getInput(): InputInterface
+    public function getInput(): InputInterface
     {
         return $this->input;
     }
@@ -61,60 +78,8 @@ abstract class AbstractCommand extends Command
     /**
      * @return \Symfony\Component\Console\Output\OutputInterface
      */
-    protected function getOutput(): OutputInterface
+    public function getOutput(): OutputInterface
     {
         return $this->output;
-    }
-
-    /**
-     * This provides the arguments of this command.
-     *
-     * @return array
-     */
-    protected function getArgument()
-    {
-        return [];
-    }
-
-    /**
-     * This provides the options of this command.
-     *
-     * @return array
-     */
-    protected function getOption()
-    {
-        return [];
-    }
-
-    protected function configure()
-    {
-        $this->setName($this->name)
-            ->setDescription($this->description);
-
-        if ($this->help) {
-            $this->setHelp($this->help);
-        }
-
-        if (! empty($arguments = $this->getArgument())) {
-            foreach ($arguments as $argument) {
-                [0 => $name, 1 => $mode, 2 => $description] = $argument;
-                $default = $argument[3] ?? null;
-                $this->addArgument($name, $mode, $description, $default);
-            }
-        }
-
-        if (! empty($options = $this->getOption())) {
-            foreach ($options as $option) {
-                $this->addOption(
-                    $option[0] ?? null,
-                    $option[1] ?? null,
-                    $option[2] ?? null,
-                    $option[3] ?? null,
-                    $option[4] ?? null
-                );
-            }
-        }
-
-        return $this;
     }
 }

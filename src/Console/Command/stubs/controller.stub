@@ -1,0 +1,70 @@
+<?php
+
+namespace {namespace};
+
+use Nilnice\Phalcon\Http\Response;
+
+class {controller} extends AbstractController
+{
+    /**
+     * Default action.
+     *
+     * @return \Nilnice\Phalcon\Http\Response
+     */
+    public function indexAction() : Response
+    {
+        return $this->successResponse();
+    }
+
+    /**
+     * Create action.
+     *
+     * @return \Nilnice\Phalcon\Http\Response
+     */
+    public function createAction() : Response
+    {
+        return $this->successResponse();
+    }
+
+    /**
+     * Update action.
+     *
+     * @param string $id
+     *
+     * @return \Nilnice\Phalcon\Http\Response
+     */
+    public function updateAction(string $id) : Response
+    {
+        if (! $id) {
+            return $this->errorResponse('Missing ID parameter');
+        }
+
+        return $this->successResponse();
+    }
+
+    /**
+     * List action.
+     *
+     * @return \Nilnice\Phalcon\Http\Response
+     */
+    public function listAction() : Response
+    {
+        return $this->successResponse();
+    }
+
+    /**
+     * Delete action.
+     *
+     * @param string $id
+     *
+     * @return \Nilnice\Phalcon\Http\Response
+     */
+    public function deleteAction(string $id = null) : Response
+    {
+        if (! $id) {
+            return $this->errorResponse('Missing ID parameter');
+        }
+
+        return $this->successResponse();
+    }
+}
