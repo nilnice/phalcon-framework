@@ -176,7 +176,7 @@ class Application
         try {
             $this->app->handle();
         } catch (\Exception $e) {
-            echo $e->getMessage();
+            response($e);
         }
 
         $response = $this->app->response;
