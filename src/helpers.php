@@ -71,6 +71,43 @@ if (! function_exists('config')) {
     }
 }
 
+if (! function_exists('response')) {
+    function response(\Exception $e, $status = 200, array $headers = [])
+    {
+        if (config('app.debug')) {
+            $data = [
+                'code'          => $e->getCode(),
+                'message'       => $e->getMessage(),
+                'file'          => $e->getFile(),
+                'line'          => $e->getLine(),
+                'trace'         => $e->getTrace(),
+                'traceAsString' => $e->getTraceAsString(),
+            ];
+        } else {
+            $data = ['message' => $e->getMessage()];
+        }
+        $content = [
+            'code'    => $e->getCode(),
+            'message' => $e->getMessage(),
+            'data'    => $data,
+        ];
+
+        if (di()->has('response')) {
+            $response = di()->get('response');
+        } else {
+            $response = new \Nilnice\Phalcon\Http\Response();
+        }
+
+        if (method_exists($e, 'getStatusCode')) {
+            $response->setStatusCode($e->getStatusCode());
+        }
+
+        $response->setJsonContent($content);
+
+        return $response;
+    }
+}
+
 if (! function_exists('flysystem')) {
     function flysystem(string $path = null)
     {
