@@ -139,7 +139,7 @@ class JWTAuth
         $this->token = $token;
 
         $uid = $this->token->getClaim('uid');
-        $auth = config('auth.class');
+        $auth = config('auth.user.class');
         $auth = $auth::findFirst([
             'conditions' => 'id=:id:',
             'bind'       => ['id' => $uid],
@@ -249,12 +249,12 @@ class JWTAuth
      * @param \Nilnice\Phalcon\Auth\AccountTypeInterface $accountType
      * @param array                                      $array
      *
-     * @return string
+     * @return \Phalcon\Mvc\Model
      */
     private function getIdentity(
         AccountTypeInterface $accountType,
         array $array
-    ): ?Model {
+    ): Model {
         return $accountType->login($array);
     }
 }
