@@ -39,10 +39,11 @@ class Handler
             $response = new Response();
         }
 
+        $statusCode = 500;
         if (method_exists($e, 'getStatusCode')) {
-            $response->setStatusCode($e->getStatusCode());
+            $statusCode = $e->getStatusCode();
         }
-
+        $response->setStatusCode($statusCode);
         $response->setJsonContent($content);
 
         return $response->isSent() ? $response : $response->send();
