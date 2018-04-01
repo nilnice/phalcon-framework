@@ -72,8 +72,8 @@ class ErrorHandler
                 'line'    => $line,
             ]
                 = $error;
-            $exception = new ErrorException($type, $message, $file, $line);
-            self::handleException($exception);
+            $e = new ErrorException($type, $message, $file, $line);
+            self::handleException($e);
         }
     }
 
