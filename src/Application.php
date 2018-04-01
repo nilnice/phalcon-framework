@@ -174,15 +174,28 @@ class Application
     public function output(): void
     {
         try {
-            $this->app->handle();
+            /** @var \Nilnice\Phalcon\Http\Response $response */
+            $response = $this->app->handle();
+
+            if (! $response->isSent()) {
+                $response->send();
+            }
         } catch (\Exception $e) {
-            response($e);
-        }
+            $response = $this->getApp()->response;
 
-        $response = $this->app->response;
-
-        if (! $response->isSent()) {
-            $response->send();
+            $statusCode = 400;
+            if (method_exists($e, 'getStatusCode')) {
+                $statusCode = $e->getStatusCode();
+            }
+            $content = [
+                'code'    => $e->getCode(),
+                'message' => $e->getMessage(),
+                'error'   => [],
+            ];
+            $response->setStatusCode($code)
+                ->sendHeaders()
+                ->setJsonContent($content)
+                ->send();
         }
     }
 
