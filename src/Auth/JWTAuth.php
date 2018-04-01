@@ -160,8 +160,12 @@ class JWTAuth
         $data->setAudience(config('app.token.aud'));
         $data->setId($appId);
 
+        if ($token->isExpired()) {
+            throw new InvalidTokenException('The token is expired', 400);
+        }
+
         if (! $token->validate($data)) {
-            throw new InvalidTokenException('The token has expired', 400);
+            throw new InvalidTokenException('The token is valid', 400);
         }
 
         return true;
